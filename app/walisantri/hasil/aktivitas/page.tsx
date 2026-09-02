@@ -603,6 +603,54 @@ export default function DailyActivityPage() {
   )
 }
 
+function LoadingScreen() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="text-center">
+        <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-white bg-white shadow-xl">
+          <div className="absolute inset-0 animate-ping rounded-2xl bg-blue-100/50" />
+          <div className="relative h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-700" />
+        </div>
+
+        <p className="mt-5 text-sm font-black text-slate-700">
+          Preparing Activity Result...
+        </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          Loading student activity data
+        </p>
+      </div>
+    </main>
+  )
+}
+
+function EmptyState() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#edf4fb] px-4">
+      <section className="w-full max-w-lg rounded-[2rem] border border-white bg-white p-10 text-center shadow-xl">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+          <UserIcon />
+        </div>
+
+        <h1 className="mt-5 text-xl font-black text-[#071a36]">
+          Student Profile Not Found
+        </h1>
+
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          This account does not have a connected student profile.
+        </p>
+
+        <Link
+          href="/walisantri"
+          className="mt-6 inline-flex rounded-xl bg-[#061a36] px-5 py-3 text-xs font-black text-white"
+        >
+          Back to Parent Portal
+        </Link>
+      </section>
+    </main>
+  )
+}
+
 function ActivityPhoto({
   path,
   alt,
@@ -831,6 +879,25 @@ function CalendarEmptyIcon() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-7 w-7">
       <rect x="4" y="5" width="16" height="15" rx="2" />
       <path strokeLinecap="round" d="M8 3v4M16 3v4M4 9h16M9 13h6M9 16h4" />
+    </svg>
+  )
+}
+
+function UserIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-7 w-7"
+    >
+      <circle cx="12" cy="8" r="3.5" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5.5 20a6.5 6.5 0 0 1 13 0"
+      />
     </svg>
   )
 }

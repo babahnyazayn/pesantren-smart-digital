@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
+import type { ReactNode } from "react"
 import { createBrowserClient } from "@supabase/ssr"
 
 type Application = {
