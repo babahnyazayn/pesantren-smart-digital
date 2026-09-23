@@ -8,18 +8,16 @@ type Jenjang = "SMP/MTs" | "SMA/MA"
 
 const feesByJenjang = {
   "SMP/MTs": {
-    uangPangkal: 8_750_000,
-    uangPangkalNormal: 10_000_000,
-    spp: 875_000,
-    outingClass: 1_150_000,
+    uangPangkal: 7_500_000,
+    sppOptions: [650_000, 750_000, 850_000],
+    outingClass: 650_000,
     extracurricular: 280_000,
     registration: 350_000,
   },
   "SMA/MA": {
-    uangPangkal: 8_950_000,
-    uangPangkalNormal: 10_000_000,
-    spp: 890_000,
-    outingClass: 1_150_000,
+    uangPangkal: 7_500_000,
+    sppOptions: [650_000, 750_000, 850_000],
+    outingClass: 650_000,
     extracurricular: 280_000,
     registration: 350_000,
   },
@@ -58,30 +56,21 @@ const extracurricularChoices = [
 
 const outingDetails = [
   {
-    quarter: "T1",
-    title: "Taman Nasional Baluran",
-    text: "Eksplorasi alam, lingkungan, dan keanekaragaman hayati.",
+    quarter: "S1",
+    title: "Outing Class Semester 1",
+    text: "Kegiatan pembelajaran berbasis pengalaman pada semester pertama.",
   },
   {
-    quarter: "T2",
-    title: "GWD / Bangsring & Snorkeling",
-    text: "Pengalaman belajar ekosistem pesisir dan laut.",
-  },
-  {
-    quarter: "T3",
-    title: "Pulau Merah & Djawatan",
-    text: "Eksplorasi alam dan pembelajaran berbasis pengalaman.",
-  },
-  {
-    quarter: "T4",
-    title: "Destinasi Edukatif Pilihan",
-    text: "Disesuaikan dengan tema pembelajaran dan kesiapan kegiatan.",
+    quarter: "S2",
+    title: "Outing Class Semester 2",
+    text: "Kegiatan pembelajaran berbasis pengalaman pada semester kedua.",
   },
 ]
 
 export default function PPDBFeesPage() {
   const [mounted, setMounted] = useState(false)
   const [jenjang, setJenjang] = useState<Jenjang>("SMP/MTs")
+  const [selectedSpp, setSelectedSpp] = useState(650_000)
   const [openSection, setOpenSection] = useState<
     "initial" | "monthly" | "outing" | "extracurricular" | null
   >(null)
@@ -92,7 +81,6 @@ export default function PPDBFeesPage() {
   }, [])
 
   const fees = feesByJenjang[jenjang]
-  const saving = fees.uangPangkalNormal - fees.uangPangkal
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#eef4fa] text-[#10233f] selection:bg-blue-100 selection:text-[#071a36]">
@@ -201,7 +189,10 @@ export default function PPDBFeesPage() {
                     <button
                       key={item}
                       type="button"
-                      onClick={() => setJenjang(item)}
+                      onClick={() => {
+                        setJenjang(item)
+                        setSelectedSpp(650_000)
+                      }}
                       className={`group cursor-pointer rounded-[1.25rem] px-5 py-4 text-left transition-all duration-300 ${
                         active
                           ? "bg-gradient-to-r from-[#0d3b72] via-[#174f91] to-[#2675bd] text-white shadow-lg shadow-blue-900/15"
@@ -242,12 +233,10 @@ export default function PPDBFeesPage() {
             <div className="grid gap-4 lg:grid-cols-2">
               <FeeCard
                 variant="featured"
-                label="KEUNTUNGAN GELOMBANG 1"
+                label="SATU KALI"
                 title="Uang Pangkal"
                 amount={fees.uangPangkal}
-                normalAmount={fees.uangPangkalNormal}
-                saving={saving}
-                description="Harga khusus Gelombang 1 untuk kebutuhan awal pendidikan dan perlengkapan santri."
+                description="Biaya awal pendidikan dan perlengkapan santri yang dibayarkan satu kali."
                 icon={<BuildingIcon />}
                 open={openSection === "initial"}
                 onClick={() =>
@@ -257,15 +246,12 @@ export default function PPDBFeesPage() {
                 }
               />
 
-              <FeeCard
-                label="BULANAN"
-                title="SPP"
-                amount={fees.spp}
-                suffix="/ bulan"
-                description="Biaya pendidikan dan layanan pembinaan rutin selama santri belajar di pesantren."
-                icon={<AcademicIcon />}
+              <SPPCard
+                options={fees.sppOptions}
+                selected={selectedSpp}
+                onSelect={setSelectedSpp}
                 open={openSection === "monthly"}
-                onClick={() =>
+                onToggle={() =>
                   setOpenSection(
                     openSection === "monthly" ? null : "monthly"
                   )
@@ -291,10 +277,44 @@ export default function PPDBFeesPage() {
           {openSection === "monthly" && (
             <DetailPanel
               eyebrow="Cakupan SPP"
-              title="Layanan Pendidikan & Pembinaan"
+              title={`SPP Rp ${formatRupiah(selectedSpp)} / bulan`}
               icon={<CheckCircleIcon />}
             >
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="rounded-[1.35rem] border border-blue-100 bg-[#f7fbff] p-4">
+                <p className="text-[8px] font-black uppercase tracking-[0.18em] text-[#7b8ca0]">
+                  Pilihan SPP Bulanan
+                </p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                  {fees.sppOptions.map((option, index) => {
+                    const active = selectedSpp === option
+
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setSelectedSpp(option)}
+                        className={`rounded-2xl border px-4 py-4 text-left transition-all duration-300 ${
+                          active
+                            ? "border-blue-200 bg-[#edf4fb] text-[#174f91] shadow-sm ring-1 ring-blue-100"
+                            : "border-[#e0e8f0] bg-white text-[#647489] hover:border-blue-200 hover:bg-[#f8fbfe]"
+                        }`}
+                      >
+                        <p className="text-[8px] font-black uppercase tracking-[0.14em] text-[#7b8ca0]">
+                          Pilihan {index + 1}
+                        </p>
+                        <p className="mt-1 text-base font-black">
+                          Rp {formatRupiah(option)}
+                        </p>
+                        <p className="mt-1 text-[9px] font-semibold text-[#7a8795]">
+                          per bulan
+                        </p>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-2 sm:grid-cols-2">
                 {sppIncludes.map((item) => (
                   <IncludedItem key={item} text={item} />
                 ))}
@@ -310,7 +330,7 @@ export default function PPDBFeesPage() {
                 amount={fees.outingClass}
                 unit="per tahun"
                 icon={<MapIcon />}
-                summary="4 kegiatan dalam setahun, satu kali setiap triwulan."
+                summary="2 kegiatan dalam setahun, satu kali setiap semester."
                 open={openSection === "outing"}
                 onClick={() =>
                   setOpenSection(openSection === "outing" ? null : "outing")
@@ -351,7 +371,7 @@ export default function PPDBFeesPage() {
                     Rp {formatRupiah(fees.outingClass)} / tahun
                   </p>
                   <p className="mt-1 text-[10px] leading-5 text-[#7a8795]">
-                    Satu paket untuk seluruh program Outing Class selama satu tahun.
+                    Mencakup 2 kegiatan Outing Class selama satu tahun, satu kali setiap semester.
                   </p>
                 </div>
               </DetailPanel>
@@ -558,6 +578,113 @@ export default function PPDBFeesPage() {
         }
       `}</style>
     </main>
+  )
+}
+
+function SPPCard({
+  options,
+  selected,
+  onSelect,
+  open,
+  onToggle,
+}: {
+  options: number[]
+  selected: number
+  onSelect: (value: number) => void
+  open: boolean
+  onToggle: () => void
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-[2.1rem] border border-white/90 bg-white/92 p-7 text-left shadow-xl shadow-blue-950/5 backdrop-blur-xl sm:p-8">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#0d3b72] via-[#2675bd] to-[#55a9d8]" />
+      <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-200/15 blur-3xl" />
+
+      <div className="relative z-10 flex items-start justify-between gap-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#edf4fb] text-[#245ea8] ring-1 ring-blue-100 shadow-sm">
+          <AcademicIcon />
+        </div>
+
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={onToggle}
+          className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border bg-white shadow-sm transition-all duration-300 ${
+            open
+              ? "rotate-180 border-blue-200 bg-blue-50 text-[#245ea8]"
+              : "border-slate-100 text-slate-400 hover:border-blue-100 hover:text-[#245ea8]"
+          }`}
+          aria-label={open ? "Tutup rincian SPP" : "Buka rincian SPP"}
+        >
+          <ChevronIcon />
+        </button>
+      </div>
+
+      <div className="relative z-10 mt-7">
+        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#245ea8]">
+          BULANAN
+        </p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-[#071a36] sm:text-3xl">
+          SPP
+        </h2>
+        <p className="mt-3 max-w-lg text-sm leading-6 text-[#697787]">
+          Pilihan SPP bulanan dapat disesuaikan dengan paket yang dipilih keluarga santri.
+        </p>
+
+        <div className="mt-5 grid gap-2 sm:grid-cols-3">
+          {options.map((option, index) => {
+            const active = selected === option
+
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => onSelect(option)}
+                className={`cursor-pointer rounded-2xl border px-4 py-4 text-left transition-all duration-300 hover:-translate-y-0.5 ${
+                  active
+                    ? "border-blue-200 bg-[#edf4fb] text-[#174f91] shadow-sm ring-1 ring-blue-100"
+                    : "border-[#e0e8f0] bg-white text-[#647489] hover:border-blue-200 hover:bg-[#f8fbfe] hover:shadow-sm"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[8px] font-black uppercase tracking-[0.14em] text-[#7b8ca0]">
+                    Pilihan {index + 1}
+                  </p>
+                  {active && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#174f91] text-white">
+                      <CheckIcon />
+                    </span>
+                  )}
+                </div>
+                <p className="mt-2 text-base font-black">
+                  Rp {formatRupiah(option)}
+                </p>
+                <p className="mt-1 text-[9px] font-semibold text-[#7a8795]">
+                  per bulan
+                </p>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+          <div>
+            <p className="text-[8px] font-black uppercase tracking-[0.17em] text-[#6b839e]">
+              SPP Dipilih
+            </p>
+            <p className="mt-1 text-2xl font-black text-[#174f91]">
+              Rp {formatRupiah(selected)} <span className="text-xs font-bold text-[#7b8ca0]">/ bulan</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onToggle}
+            className="cursor-pointer text-[8px] font-black uppercase tracking-[0.17em] text-[#245ea8]"
+          >
+            {open ? "Tutup rincian" : "Lihat rincian"}
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 
