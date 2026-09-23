@@ -11,14 +11,14 @@ const feesByJenjang = {
     uangPangkal: 7_500_000,
     sppOptions: [650_000, 750_000, 850_000],
     outingClass: 650_000,
-    extracurricular: 280_000,
+    extracurricular: 100_000,
     registration: 350_000,
   },
   "SMA/MA": {
     uangPangkal: 7_500_000,
     sppOptions: [650_000, 750_000, 850_000],
     outingClass: 650_000,
-    extracurricular: 280_000,
+    extracurricular: 100_000,
     registration: 350_000,
   },
 }
@@ -343,7 +343,7 @@ export default function PPDBFeesPage() {
                 amount={fees.extracurricular}
                 unit="per bulan"
                 icon={<ActivityIcon />}
-                summary="1 program wajib + 1 program pilihan."
+                summary="1 Extracurriculer."
                 open={openSection === "extracurricular"}
                 onClick={() =>
                   setOpenSection(
